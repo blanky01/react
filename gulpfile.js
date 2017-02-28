@@ -11,7 +11,7 @@
 
 var gulp = require('gulp');
 var babel = require('gulp-babel');
-var flatten = require('gulp-flatten');
+var flatten = require('gulp-flatten');//相对路径处理
 var del = require('del');
 var merge = require('merge-stream');
 
@@ -21,6 +21,7 @@ var extractErrors = require('./scripts/error-codes/gulp-extract-errors');
 var devExpressionWithCodes = require('./scripts/error-codes/dev-expression-with-codes');
 
 // Load all of the Gulp plugins.
+//TODO：加载package里面所有的插件？
 var plugins = require('gulp-load-plugins')();
 
 function getTask(name) {
@@ -108,11 +109,15 @@ var paths = {
   },
 };
 
+//fbjs是Facebook为了方便自己的项目开发而开发的一系列工具，并不推荐在非fb项目中使用
+//TODO:这里把所有fb工具挂载到moduleMapBase
 var moduleMapBase = Object.assign(
   {'object-assign': 'object-assign'},
   require('fbjs/module-map')
 );
 
+
+//TODO:moduleMapReact保存了在react项目中通过别名引用的模块的路径映射，编译过程中会替换成真实路径，这样做的原因是为了消除相对路径的影响
 var moduleMapReact = Object.assign(
   {
     // Addons needs to reach into DOM internals
